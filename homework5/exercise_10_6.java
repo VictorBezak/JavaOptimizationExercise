@@ -11,8 +11,9 @@ Description:
 	memory optimization.
 */
 
-package homework5;
+//package homework5;
 
+import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -24,41 +25,41 @@ class StackOfIntegers
 	private boolean isPrime(byte num) {
 		boolean prime = true;
 		
-		// Check num against all primes currently in our primes list
-			// If num is not divisible by any of the primes in the FIRST HALF of our primes list
-			// Then it is prime and we can continue
-			// But as  soon as we find a prime divisor, will set prime to false and break out of loop
+		// Check num against first half of primes currently in our primes list
+			// If num is divisible by any of these primes
+				//set prime to false and break out of loop
 		
 		Iterator<Byte> primeList = primes.iterator();
-		
-		// FIND NEW METHOD TO CHECK VALUES OF OUR ARRAY LIST
-		// HERE WE EVALUATE EVERY PRIME IN LIST, WE ONLY NEED FIRST HALF
-		while(primeList.hasNext()) {
+		byte checkTo = (byte)(primes.size() / 2);
+
+		for(byte i = 0; i < checkTo; i++) {
 			if ((num / primeList.next().floatValue()) % 1 == 0) {
 				prime = false;
 				break;
 			}
 		}
-		
 		if (prime) { return true; }
 		else { return false; }
 	}
 	
 	// Function to capture all primes less than 120
-	// We do not need to evaluate even numbers after 2
-	public ArrayList<Byte> getPrimes() {
-		// Assuming we're given fixed value of 2 or greater
-		primes.add((byte)2);
-		
-		for(byte i = 3; i <= 120; i+=2) {
-			if(isPrime(i)) { primes.add((byte)i); }
+	public ArrayList<Byte> getPrimes(byte val) {
+		if(val < 2) {
+			System.out.print("there are no prime numbers less than " + val);
 		}
-		
+		else {
+			primes.add((byte)2);
+			
+			// Conditional (i < 115) is set to safeguard against post-increment overflow
+			for(byte i = 3; i <= val && i < 115; i+=2) {
+				if(isPrime(i)) { primes.add((byte)i); }
+			}
+		}		
 		return primes;
 	}
 		
 	// Function to print all captured primes in reverse order
-	public void primeReversePrint(ArrayList<Byte> primes) {
+	public void reversePrint(ArrayList<Byte> primes) {
 		for(byte i = (byte)(primes.size() - 1); i >= 0; i--) {
 			System.out.print(primes.get(i) + " ");
 		}		
@@ -71,7 +72,18 @@ public class exercise_10_6
 	public static void main(String[] args)
 	{
 		StackOfIntegers stack = new StackOfIntegers();
+		Scanner input = new Scanner(System.in);
+		byte value;
 		
-		stack.primeReversePrint(stack.getPrimes());
+		System.out.print("Enter value: ");
+		try {
+			value = input.nextByte();
+			stack.reversePrint(stack.getPrimes(value));
+		}
+		catch(Exception InputMismatch) {
+			System.out.println("byte input must be within range (-128 : 127)");
+		}
+		
+		input.close();
 	}
 }
